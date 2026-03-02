@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        IT Operations Predictive Analysis
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>IT Operations Forecast</h1>
+            <p>Predicting IT Support Volume to Reduce User-friction</p>
+        </header>
+
+        <div class="chart-wrapper">
+            <canvas id="ticketChart"></canvas>
+        </div>
+        <div class="insights-card">
+            <h3>Operational Insights</h3>
+            <p><strong>{{ insight_message }}</strong></p>
+        </div>
+    </div>
+    <script>
+        const days = {{ labels | tojson | safe}};
+        const historicalData = {{ historical | tojson | safe}};
+        const predictedData = {{ predicted | tojson | safe}};
+
+        const ctx = document.getElementById('ticketChart').getContext('2d');
+        const ticketChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [
+                    {
+                        label: 'Past Tickets',
+                        data: historicalData,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Predicted Trend',
+                        data: predictedData,
+                        borderColor: '#E50914',
+                        borderWidth: 3,
+                        borderDash: [5, 5],
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ffffff' } }
+                },
+                scales: {
+                    y: { grid: { color: '#333333' }, ticks: { color: '#b3b3b3' } },
+                    x: { grid: { color: '#333333' }, ticks: { color: '#b3b3b3' } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
